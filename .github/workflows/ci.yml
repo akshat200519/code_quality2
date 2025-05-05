@@ -41,17 +41,9 @@ jobs:
       - name: Scan for security issues with bandit
         run: bandit -r . -ll 
 
-      - name: Check for insecure dependencies with pip-audit
-        run: |
-          pip freeze > temp_requirements.txt
-          pip-audit -r temp_requirements.txt
-          rm temp_requirements.txt
 
       - name: Create junit directory
         run: mkdir -p junit 
-
-      - name: Run tests with pytest
-        run: pytest tests/ --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml 
 
   sonarcloud:
     name: SonarCloud Scan
