@@ -9,7 +9,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest # This runs on Linux in the cloud!
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         python-version: ["3.9", "3.10", "3.11"]
@@ -28,30 +28,30 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install flake8 pylint black bandit pip-audit pytest
-          # Keep Linux commands here! This runs on the GitHub Runner.
 
       - name: Lint with flake8
-        run: flake8 . # Linux command
+        run: flake8 . 
 
       - name: Lint with pylint
-        run: pylint my_module/ tests/ || true # Linux command
+        run: pylint my_module/ tests/ || true 
 
       # - name: Format check with black (Optional)
-      #   run: black --check . # Linux command
+      #   run: black --check . 
 
       - name: Scan for security issues with bandit
-        run: bandit -r . -ll # Linux command
+        run: bandit -r . -ll 
 
       - name: Check for insecure dependencies with pip-audit
         run: |
           pip freeze > temp_requirements.txt
           pip-audit -r temp_requirements.txt
-          rm temp_requirements.txt # Linux command (rm)
-          # Keep Linux commands here!
+          rm temp_requirements.txt
+
+      - name: Create junit directory
+        run: mkdir -p junit 
 
       - name: Run tests with pytest
-        run: |
-          pytest tests/ --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml # Linux command
+        run: pytest tests/ --doctest-modules --junitxml=junit/test-results-${{ matrix.python-version }}.xml 
 
       - name: Upload pytest test results
         uses: actions/upload-artifact@v4
@@ -60,7 +60,6 @@ jobs:
           path: junit/test-results-${{ matrix.python-version }}.xml
         if: always()
 
-  # SonarCloud job remains unchanged as it also runs on ubuntu-latest
   sonarcloud:
     name: SonarCloud Scan
     runs-on: ubuntu-latest
@@ -70,7 +69,7 @@ jobs:
         with:
           fetch-depth: 0
       - name: SonarCloud Scan
-        uses: SonarSource/sonarcloud-github-action@v2.2.0 # Use a specific version
+        uses: SonarSource/sonarcloud-github-action@v2.2.0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
